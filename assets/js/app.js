@@ -52,7 +52,7 @@ d3.csv("assets/data/data.csv").then(function(data) {
 // make a scale variable to set up scaleLinear function
     var xScale= d3.scaleLinear()
     .range([0, chartWidth])
-    .domain([d3.min(healthData, data => data[xPoverty]-1) , d3.max(healthData, data => data[xPoverty])]);
+    .domain([d3.min(healthData, data => data[xPoverty]-1) , d3.max(healthData, data => data[xPoverty])+1]);
 
     var yScale= d3.scaleLinear()
     .range([chartHeight, 0])
