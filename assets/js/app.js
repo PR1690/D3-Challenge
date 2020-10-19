@@ -1,6 +1,14 @@
 // Graph:1 Healthcare Vs. Poverty and Smokers vs. Age
-// set an axis labels
+//define a responsive function
+function makeResponsive() {
 
+    var svgArea = d3.select("body").select("svg");
+
+  if (!svgArea.empty()) {
+    svgArea.remove();
+  }
+
+// set an axis labels
 var xPoverty = "poverty"
 var yHealthcare = "healthcare"
 
@@ -9,7 +17,7 @@ var svgWidth = 960;
 var svgHeight= 600;
 
 // define chart margin as an object
-var chartMargin ={top:30, right:170, bottom:150, left:50};
+var chartMargin ={top:30, right:150, bottom:100, left:70};
 
 // define dimesion of the chart area
 var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
@@ -71,53 +79,54 @@ d3.csv("assets/data/data.csv").then(function(data) {
     var newCir = newGroup.append("circle")
         .attr("cx", d => xScale(d[xPoverty]))
         .attr("cy", d => yScale(d[yHealthcare]))
-        .attr("r", 12)
+        .attr("r", 13)
         .classed("stateCircle", true);
 
     var newLabel = newGroup.append("text")
         .text (d => d.abbr)
         .attr("dx", d => xScale(d[xPoverty])-10)
         .attr("dy", d => yScale(d[yHealthcare])+5)
-        .classed("stateIn", true);
+        .classed("stAbbr", true);
 
-// Create group for xAxis labels
+// group for xaxis labels
     var xaxisLabel = chartGroup.append("g")
     .attr("transform", `translate(${chartWidth / 2}, ${chartHeight})`);
 
-    var povertyLabel = xaxisLabel.append("text")
+    var povLabel = xaxisLabel.append("text")
     .attr("x", 0)
-    .attr("y", 40)
-    .attr("value", "poverty") // value to grab for event listener
+    .attr("y", 35)
+    .attr("value", "poverty") 
     .text("In Poverty (%)")
     .classed("active", true);
 
     var ageLabel = xaxisLabel.append("text")
     .attr("x", 0)
-    .attr("y", 60)
-    .attr("value", "age") // value to grab for event listener
+    .attr("y", 55)
+    .attr("value", "age") 
     .text("Age (Median)")
     .classed("inactive", true);
 
-// Create group for yAxis labels
+// group for yaxis labels
     var yaxisLabel = chartGroup.append("g");
 
-    var healthcareLabel = yaxisLabel.append("text")
+    var healthLabel = yaxisLabel.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -(chartHeight / 2))
-    .attr("y", -40)
-    .attr("value", "healthcare") // value to grab for event listener
+    .attr("y", -35)
+    .attr("value", "healthcare") 
     .text("Lacks Healthcare (%)")
     .classed("active", true);
 
     var smokesLabel = yaxisLabel.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -(chartHeight / 2))
-    .attr("y", -60)
-    .attr("value", "smokes") // value to grab for event listener
+    .attr("y", -55)
+    .attr("value", "smokes") 
     .text("Smokes (%)")
     .classed("inactive", true);
 
 })
-
+}
+makeResponsive();
 //event listerner for window resize
 d3.select(window).on("resize", makeResponsive);
