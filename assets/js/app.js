@@ -14,10 +14,10 @@ var yHealthcare = "healthcare"
 
 //define SVG area dimension
 var svgWidth = 960;
-var svgHeight= 600;
+var svgHeight= 700;
 
 // define chart margin as an object
-var chartMargin ={top:30, right:100, bottom:100, left:90};
+var chartMargin ={top:30, right:100, bottom:80, left:90};
 
 // define dimesion of the chart area
 var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
