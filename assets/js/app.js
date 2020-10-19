@@ -17,7 +17,7 @@ var svgWidth = 960;
 var svgHeight= 600;
 
 // define chart margin as an object
-var chartMargin ={top:30, right:150, bottom:100, left:70};
+var chartMargin ={top:30, right:100, bottom:100, left:90};
 
 // define dimesion of the chart area
 var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
@@ -79,7 +79,7 @@ d3.csv("assets/data/data.csv").then(function(data) {
     var newCir = newGroup.append("circle")
         .attr("cx", d => xScale(d[xPoverty]))
         .attr("cy", d => yScale(d[yHealthcare]))
-        .attr("r", 13)
+        .attr("r", 16)
         .classed("stateCircle", true);
 
     var newLabel = newGroup.append("text")
