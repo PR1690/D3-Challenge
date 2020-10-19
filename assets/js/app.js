@@ -1,15 +1,15 @@
-// Graph:1 Healthcare Vs. Poverty
-// set an axis
+// Graph:1 Healthcare Vs. Poverty and Smokers vs. Age
+// set an axis labels
 
-var xLabel = "poverty"
-var yLabel = "healthcare"
+var xPoverty = "poverty"
+var yHealthcare = "healthcare"
 
 //define SVG area dimension
 var svgWidth = 960;
-var svgHeight= 700;
+var svgHeight= 600;
 
 // define chart margin as an object
-var chartMargin ={top:30, right:30, bottom:50, left:50};
+var chartMargin ={top:30, right:170, bottom:150, left:50};
 
 // define dimesion of the chart area
 var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
@@ -31,24 +31,93 @@ var chartGroup = svg.append("g")
 d3.csv("assets/data/data.csv").then(function(data) {
 
     var healthData = data;
-
-// print data on console
     console.log(healthData);
 
-// cast each value in healthData and convert into number by using Unary operator
+// cast each value in healthData and string to convert into number by using Unary operator
     healthData.forEach(function(data) {
         data.healthcare = +data.healthcare;
         data.poverty    = +data.poverty;
         data.smokes     = +data.smokes;
         data.age        = +data.age;
-        data.obesity    = +data.obesity;
-        data.income     = +data.income;
     });
+
+// make a scale variable to set up scaleLinear function
+    var xScale= d3.scaleLinear()
+    .range([0, chartWidth])
+    .domain([d3.min(healthData, data => data[xPoverty]) - 2, d3.max(healthData, data => data[xPoverty]) + 2]);
+
+    var yScale= d3.scaleLinear()
+    .range([chartHeight, 0])
+    .domain([d3.min(healthData, data => data[yHealthcare]) - 2, d3.max(healthData, data => data[yHealthcare]) + 2]);
+
+//create x and y axes
+    var xAxis = d3.axisBottom(xScale);
+    var yAxis = d3.axisLeft(yScale);
+
+//set x to the bottom of the chart
+    var xBottom = chartGroup.append("g")
+    .attr("transform",`translate(0, ${chartHeight})`)
+    .call(xAxis);
+
+//set y to the left of the chart
+    var yLeft = chartGroup.append("g")
+    .call(yAxis);
+
+//configure a band scale for the xaxis
+    var newGroup = chartGroup.selectAll("g circle")
+        .data(healthData).enter()
+        .append("g")
+
+    var newCir = newGroup.append("circle")
+        .attr("cx", d => xScale(d[xPoverty]))
+        .attr("cy", d => yScale(d[yHealthcare]))
+        .attr("r", 12)
+        .classed("stateCircle", true);
+
+    var newLabel = newGroup.append("text")
+        .text (d => d.abbr)
+        .attr("dx", d => xScale(d[xPoverty])-10)
+        .attr("dy", d => yScale(d[yHealthcare])+5)
+        .classed("stateIn", true);
+
+// Create group for xAxis labels
+    var xaxisLabel = chartGroup.append("g")
+    .attr("transform", `translate(${chartWidth / 2}, ${chartHeight})`);
+
+    var povertyLabel = xaxisLabel.append("text")
+    .attr("x", 0)
+    .attr("y", 40)
+    .attr("value", "poverty") // value to grab for event listener
+    .text("In Poverty (%)")
+    .classed("active", true);
+
+    var ageLabel = xaxisLabel.append("text")
+    .attr("x", 0)
+    .attr("y", 60)
+    .attr("value", "age") // value to grab for event listener
+    .text("Age (Median)")
+    .classed("inactive", true);
+
+// Create group for yAxis labels
+    var yaxisLabel = chartGroup.append("g");
+
+    var healthcareLabel = yaxisLabel.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -(chartHeight / 2))
+    .attr("y", -40)
+    .attr("value", "healthcare") // value to grab for event listener
+    .text("Lacks Healthcare (%)")
+    .classed("active", true);
+
+    var smokesLabel = yaxisLabel.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -(chartHeight / 2))
+    .attr("y", -60)
+    .attr("value", "smokes") // value to grab for event listener
+    .text("Smokes (%)")
+    .classed("inactive", true);
+
 })
-    .catch(function(error) {            // to catch an error
-        console.log(error);
-    });
 
-
-
-
+//event listerner for window resize
+d3.select(window).on("resize", makeResponsive);
